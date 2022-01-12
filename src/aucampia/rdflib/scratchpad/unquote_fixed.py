@@ -1,5 +1,7 @@
 import re
 
+from aucampia.rdflib.scratchpad.unquote_new import unquote_new
+
 r_unicodeEscape = re.compile(r"(\\u[0-9A-Fa-f]{4}|\\U[0-9A-Fa-f]{8})")
 
 string_escape_map = {
@@ -24,10 +26,10 @@ def decodeUnicodeEscape(s: str) -> str:
     s is a unicode string
     replace ``\\n`` and ``\\u00AC`` unicode escapes
     """
-    # if "\\" not in s:
-    #     # Most of times, there are no backslashes in strings.
-    #     # In the general case, it could use maketrans and translate.
-    #     return s
+    if "\\" not in s:
+        # Most of times, there are no backslashes in strings.
+        # In the general case, it could use maketrans and translate.
+        return s
 
     s = s.replace("\\t", "\t")
     s = s.replace("\\n", "\n")
@@ -51,13 +53,16 @@ r_reserved = re.compile(r"\\([~.\-!$&'()*+,;=\/?#@%_])")
 r_uniquot = re.compile(r"\\u([0-9A-Fa-f]{4})|\\U([0-9A-Fa-f]{8})")
 
 
-def unquote(s: str, validate: bool = False) -> str:
+def unquote(s: str, validate: bool = False, new: bool = False) -> str:
     """Unquote an N-Triples string."""
     if not validate:
-        if isinstance(s, str):  # nquads
-            s = decodeUnicodeEscape(s)
+        if new:
+            return unquote_new(s)
         else:
-            s = s.decode("unicode-escape")  # type: ignore[unreachable]
+            if isinstance(s, str):  # nquads
+                s = decodeUnicodeEscape(s)
+            else:
+                s = s.decode("unicode-escape")  # type: ignore[unreachable]
 
         return s
     else:

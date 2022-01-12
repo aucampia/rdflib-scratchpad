@@ -8,15 +8,14 @@ import pytest
 import enum
 from pytest_benchmark.fixture import BenchmarkFixture  # type: ignore[import]
 
-from aucampia.rdflib.scratchpad.unquote_new import (
-    unquote_new,
-    string_escape_map,
-    turtle_escape_pattern,
-)
 
 import itertools
 
-from aucampia.rdflib.scratchpad.unquote_fixed import decodeUnicodeEscape, unquote
+from aucampia.rdflib.scratchpad.unquote import (
+    decodeUnicodeEscape,
+    unquote,
+    _string_escape_map,
+)
 
 
 class EscapeGroup(enum.Enum):
@@ -49,7 +48,7 @@ def make_test_data() -> List[Tuple[str, str]]:
 
     string_escapes = "tbnrf'"
     for char in string_escapes:
-        add_pair(f"{char}", string_escape_map[char])
+        add_pair(f"{char}", _string_escape_map[char])
 
     # special handling because «"» should not appear in string, and add_pair
     # will add it.
@@ -61,9 +60,9 @@ def make_test_data() -> List[Tuple[str, str]]:
     result.append(("\\\\", "\\"))
     result.append(("\\\\\\\\", "\\\\"))
 
-    reserved_escapes = "~.-!$&'()*+,;=/?#@%_"
-    for char in reserved_escapes:
-        add_pair(f"{char}", char)
+    # reserved_escapes = "~.-!$&'()*+,;=/?#@%_"
+    # for char in reserved_escapes:
+    #     add_pair(f"{char}", char)
 
     return result
 
@@ -76,7 +75,7 @@ def test_check_data() -> None:
 
 
 @pytest.mark.parametrize("escaped, unescaped", make_test_data())
-def test_unquote(escaped: str, unescaped: str) -> None:
+def test_unquote_old(escaped: str, unescaped: str) -> None:
     logging.info("%r -> %r", escaped, unescaped)
     assert unescaped == unquote(escaped, False)
 
@@ -88,18 +87,18 @@ def test_unquote_validate(escaped: str, unescaped: str) -> None:
 
 
 @pytest.mark.parametrize("escaped, unescaped", make_test_data())
-def test_unescape(escaped: str, unescaped: str) -> None:
+def test_unquote_new(escaped: str, unescaped: str) -> None:
     logging.info("%r -> %r", escaped, unescaped)
-    assert unescaped == unquote_new(escaped)
+    assert unescaped == unquote(escaped, new=True)
 
 
-def test_turtle_unescaper() -> None:
-    logging.debug("EscapeGroup.__members__ = %s", EscapeGroup.__members__)
-    logging.debug("turtle_unescaper._pattern = %r", turtle_escape_pattern)
-    unescaped = unquote_new(r"\n - \u00AA - \u00bb - \U000000BB - \U000000aa - \#")
-    logging.debug("unescaped = %r", unescaped)
+# def test_turtle_unescaper() -> None:
+#     logging.debug("EscapeGroup.__members__ = %s", EscapeGroup.__members__)
+#     logging.debug("turtle_unescaper._pattern = %r", turtle_escape_pattern)
+#     unescaped = unquote(r"\n - \u00AA - \u00bb - \U000000BB - \U000000aa - \#", new=True)
+#     logging.debug("unescaped = %r", unescaped)
 
-    # TurtleUnescaper.unescape(r"\n - \u00AA - \U000000BB - \#")
+#     # TurtleUnescaper.unescape(r"\n - \u00AA - \U000000BB - \#")
 
 
 # lorem_ipsum = """

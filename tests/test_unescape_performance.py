@@ -8,21 +8,13 @@ import pytest
 import enum
 from pytest_benchmark.fixture import BenchmarkFixture  # type: ignore[import]
 
-from aucampia.rdflib.scratchpad.unquote_new import (
-    unquote_new,
-    string_escape_map,
-    turtle_escape_pattern,
-)
-
 import itertools
 
-from aucampia.rdflib.scratchpad.unquote_fixed import decodeUnicodeEscape, unquote
+from aucampia.rdflib.scratchpad.unquote import unquote
 
 
 class EscapeGroup(enum.Enum):
-    RESERVED = 0
     STRING = 1
-    UNICODE = 2
     NARROW = 3
     WIDE = 4
 
@@ -60,9 +52,7 @@ def add_escapes(
         if escape_group_count == 0:
             continue
         escape_group = escape_groups[chunk_index % escape_group_count]
-        if escape_group == EscapeGroup.RESERVED:
-            result.write(f"\\{random.choice(reserved_escape_chars)}")
-        elif escape_group == EscapeGroup.STRING:
+        if escape_group == EscapeGroup.STRING:
             result.write(f"\\{random.choice('tbnrf')}")
         elif escape_group == EscapeGroup.NARROW:
             chars = "".join(random.choice("123456789abcdefABCDEF") for i in range(4))
@@ -78,7 +68,6 @@ test_strings_map: Dict[str, List[str]] = {
     "few_escapes": [add_escapes(lorem_ipsum, list(EscapeGroup), 100)],
     "many_escapes": [add_escapes(lorem_ipsum, list(EscapeGroup), 10)],
     "many_escapes_string": [add_escapes(lorem_ipsum, [EscapeGroup.STRING], 10)],
-    "many_escapes_reserved": [add_escapes(lorem_ipsum, [EscapeGroup.RESERVED], 10)],
     "many_escapes_narrow": [add_escapes(lorem_ipsum, [EscapeGroup.NARROW], 10)],
     "many_escapes_wide": [add_escapes(lorem_ipsum, [EscapeGroup.WIDE], 10)],
 }

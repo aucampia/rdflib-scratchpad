@@ -1,0 +1,8 @@
+{
+    "recommendations": [
+        "ms-python.python",
+        "ryanluker.vscode-coverage-gutters",
+        "ms-python.vscode-pylance",
+        "editorconfig.editorconfig"
+    ]
+}

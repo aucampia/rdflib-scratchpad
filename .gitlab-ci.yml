@@ -1,0 +1,54 @@
+# https://docs.gitlab.com/ce/ci/quick_start/
+# https://docs.gitlab.com/ce/ci/yaml/
+# https://docs.gitlab.com/ce/ci/yaml/gitlab_ci_yaml.html
+# https://docs.gitlab.com/ce/ci/variables/predefined_variables.html
+# https://docs.gitlab.com/ce/ci/variables/README.html
+
+stages:
+  - all
+
+job-all:
+  image: docker.io/library/python:3.6-alpine
+  stage: all
+  script: |
+    set -eo pipefail
+    env | grep CI_
+    env | sed -n 's/^\(POETRY_PYPI_TOKEN_PYPI=\).*$/\1****/gp'
+    mkdir -vp .cache-apk
+    rm -rf /etc/apk/cache
+    ln -vfs $(pwd)/.cache-apk /etc/apk/cache
+    ls -ald /etc/apk/cache .cache-apk
+    export PIP_CACHE_DIR="$(pwd)/.cache-pip"
+    export POETRY_CACHE_DIR="$(pwd)/.cache-poetry"
+    du -hs ${PIP_CACHE_DIR} ${POETRY_CACHE_DIR} .cache-apk || :
+    apk add --virtual \
+      build-dependencies \
+      build-base \
+      bash \
+      make \
+      git \
+      libffi-dev \
+      go \
+    && :
+    find /etc/apk/cache $(pwd)/.cache-apk
+    set -o pipefail
+    export PATH="${HOME}/.local/bin:${HOME}/go/bin:${PATH}"
+    pip install --user -r requirements-poetry.txt
+    poetry install
+    make toolchain
+    make validate
+    du -hs ${PIP_CACHE_DIR} ${POETRY_CACHE_DIR} .cache-apk || :
+    if [ -n "${CI_COMMIT_TAG}" ]
+    then
+      poetry publish --build
+    else
+      poetry build
+    fi
+  # https://docs.gitlab.com/ce/ci/yaml/README.html#cache
+  cache:
+    key: "$CI_PROJECT_ID"
+    paths:
+      - .cache-pip/
+      - .cache-poetry/
+      - .cache-apk/
+      - .venv/

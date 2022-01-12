@@ -23,6 +23,7 @@ python = "^3.7.0"
 click = "^8.0.3"
 pydantic = "^1.9.0"
 typer = "^0.4.0"
+rdflib = { git = "https://github.com/RDFLib/rdflib.git", branch = "master" }
 
 
 [tool.poetry.dev-dependencies]
@@ -45,6 +46,8 @@ types-click = "^7.1.8"
 types-dataclasses = "^0.6.4"
 typing-extensions = "^4.0.1"
 pycln = "^1.1.0"
+pytest-benchmark = "^3.4.1"
+pytest-profiling = "^1.7.0"
 
 [tool.coverage.report]
 # https://coverage.readthedocs.io/en/coverage-5.0/config.html

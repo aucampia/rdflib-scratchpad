@@ -75,13 +75,14 @@ test_strings_map: Dict[str, List[str]] = {
 
 def test_add_escapes() -> None:
     assert add_escapes(lorem_ipsum, []) == lorem_ipsum
-    logging.info("%s", add_escapes(lorem_ipsum, list(EscapeGroup)))
+    logging.debug("%s", add_escapes(lorem_ipsum, list(EscapeGroup)))
 
 
 unescapers: Dict[str, Callable[[str], str]] = {
     "unquote_old": lambda input: unquote(input, validate=False),
     "unquote_validate": lambda input: unquote(input, validate=True),
-    "unquote_new": lambda input: unquote(input, new=True),
+    "unquote_new": lambda input: unquote(input, variant=1),
+    "unquote_new_dict": lambda input: unquote(input, variant=2),
 }
 
 

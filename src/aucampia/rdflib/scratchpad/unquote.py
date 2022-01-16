@@ -17,18 +17,34 @@ _string_escape_map = {
 _string_escape_translator = str.maketrans(_string_escape_map)
 
 
+_turtle_escape_pattern = re.compile(
+    r"""\\(?:([tbnrf"'\\])|(u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8}))""",
+    # re.ASCII,
+)
+
+
+def _turtle_escape_subber_dict(match: Match[str]) -> str:
+    smatch, umatch = match.groups()
+    if smatch is not None:
+        return _string_escape_map[smatch]
+    else:
+        return chr(int(umatch[1:], 16))
+
+
+def decodeUnicodeEscapeNewDict(escaped: str) -> str:
+    if "\\" not in escaped:
+        # Most of times, there are no backslashes in strings.
+        # In the general case, it could use maketrans and translate.
+        return escaped
+    return _turtle_escape_pattern.sub(_turtle_escape_subber_dict, escaped)
+
+
 def _turtle_escape_subber(match: Match[str]) -> str:
     smatch, umatch = match.groups()
     if smatch is not None:
         return smatch.translate(_string_escape_translator)
     else:
         return chr(int(umatch[1:], 16))
-
-
-_turtle_escape_pattern = re.compile(
-    r"""\\(?:([tbnrf"'\\])|(u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8}))""",
-    # re.ASCII,
-)
 
 
 def decodeUnicodeEscapeNew(escaped: str) -> str:
@@ -74,18 +90,28 @@ r_quot = re.compile(r"""\\([tbnrf"'\\])""")
 r_uniquot = re.compile(r"\\u([0-9A-Fa-f]{4})|\\U([0-9A-Fa-f]{8})")
 
 
-def unquote(s: str, validate: bool = False, new: bool = False) -> str:
+variants = {
+    0: decodeUnicodeEscape,
+    1: decodeUnicodeEscapeNew,
+    2: decodeUnicodeEscapeNewDict,
+}
+
+
+def unquote(s: str, validate: bool = False, variant: int = 0) -> str:
     """Unquote an N-Triples string."""
     if not validate:
-        if new:
-            return decodeUnicodeEscapeNew(s)
-        else:
-            if isinstance(s, str):  # nquads
-                s = decodeUnicodeEscape(s)
-            else:
-                s = s.decode("unicode-escape")  # type: ignore[unreachable]
+        # if variant == 0:
+        #     if isinstance(s, str):  # nquads
+        #         s = decodeUnicodeEscape(s)
+        #     else:
+        #         s = s.decode("unicode-escape")  # type: ignore[unreachable]
+        # elif variant == 1:
+        #     return decodeUnicodeEscapeNew(s)
+        # elif variant == 2:
+        #     return decodeUnicodeEscapeNewDict(s)
+        # else:
 
-        return s
+        return variants[variant](s)
     else:
         result = []
         while s:

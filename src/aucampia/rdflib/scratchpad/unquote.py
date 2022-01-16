@@ -22,16 +22,17 @@ _turtle_escape_pattern = re.compile(
     # re.ASCII,
 )
 
-smatch_variant: Dict[int, Callable[[str], str]] = {
-    1: lambda smatch: smatch.translate(_string_escape_translator),
-    2: lambda smatch: _string_escape_map[smatch],
-}
+# smatch_variant: Dict[int, Callable[[str], str]] = {
+#     1: lambda smatch: smatch.translate(_string_escape_translator),
+#     2: lambda smatch: _string_escape_map[smatch],
+# }
 
 
 def _turtle_escape_subber(match: Match[str], variant: int) -> str:
     smatch, umatch = match.groups()
     if smatch is not None:
-        return smatch_variant[variant](smatch)
+        return _string_escape_map[smatch]
+        # return smatch_variant[variant](smatch)
         # if variant == 1:
         #     return smatch.translate(_string_escape_translator)
         # if variant == 2:
@@ -120,11 +121,11 @@ r_uniquot = re.compile(r"\\u([0-9A-Fa-f]{4})|\\U([0-9A-Fa-f]{8})")
 variants = {
     0: decodeUnicodeEscape,
     1: decodeUnicodeEscapeNew,
-    2: decodeUnicodeEscapeNew,
+    # 2: decodeUnicodeEscapeNew,
 }
 
 
-def unquote(s: str, validate: bool = False, variant: int = 0) -> str:
+def unquote(s: str, validate: bool, variant: int) -> str:
     """Unquote an N-Triples string."""
     if not validate:
         # if variant == 0:

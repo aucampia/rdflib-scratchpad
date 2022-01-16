@@ -79,10 +79,10 @@ def test_add_escapes() -> None:
 
 
 unescapers: Dict[str, Callable[[str], str]] = {
-    "unquote_old": lambda input: unquote(input, validate=False),
-    "unquote_validate": lambda input: unquote(input, validate=True),
-    "unquote_new": lambda input: unquote(input, variant=1),
-    "unquote_new_dict": lambda input: unquote(input, variant=2),
+    "unquote_old": lambda input: unquote(input, validate=False, variant=0),
+    "unquote_validate": lambda input: unquote(input, validate=True, variant=0),
+    "unquote_new": lambda input: unquote(input, validate=False, variant=1),
+    # "unquote_new_dict": lambda input: unquote(input, variant=2),
 }
 
 

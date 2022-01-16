@@ -77,25 +77,25 @@ def test_check_data() -> None:
 @pytest.mark.parametrize("escaped, unescaped", make_test_data())
 def test_unquote_old(escaped: str, unescaped: str) -> None:
     logging.info("%r -> %r", escaped, unescaped)
-    assert unescaped == unquote(escaped, False)
+    assert unescaped == unquote(escaped, False, variant=0)
 
 
 @pytest.mark.parametrize("escaped, unescaped", make_test_data())
 def test_unquote_validate(escaped: str, unescaped: str) -> None:
     logging.info("%r -> %r", escaped, unescaped)
-    assert unescaped == unquote(escaped, True)
+    assert unescaped == unquote(escaped, True, variant=0)
 
 
 @pytest.mark.parametrize("escaped, unescaped", make_test_data())
 def test_unquote_new(escaped: str, unescaped: str) -> None:
     logging.info("%r -> %r", escaped, unescaped)
-    assert unescaped == unquote(escaped, variant=1)
+    assert unescaped == unquote(escaped, False, variant=1)
 
 
-@pytest.mark.parametrize("escaped, unescaped", make_test_data())
-def test_unquote_new_dict(escaped: str, unescaped: str) -> None:
-    logging.info("%r -> %r", escaped, unescaped)
-    assert unescaped == unquote(escaped, variant=2)
+# @pytest.mark.parametrize("escaped, unescaped", make_test_data())
+# def test_unquote_new_dict(escaped: str, unescaped: str) -> None:
+#     logging.info("%r -> %r", escaped, unescaped)
+#     assert unescaped == unquote(escaped, variant=2)
 
 
 # def test_turtle_unescaper() -> None:

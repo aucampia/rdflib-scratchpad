@@ -24,6 +24,7 @@ click = "^8.0.3"
 pydantic = "^1.9.0"
 typer = "^0.4.0"
 rdflib = { git = "https://github.com/RDFLib/rdflib.git", branch = "master" }
+rfc3986 = "^2.0.0"
 
 
 [tool.poetry.dev-dependencies]

@@ -1,0 +1,26 @@
+{
+  "template": "/home/iwana/sw/d/github.com/aucampia/cookiecutter-python",
+  "commit": "6904a2901a0c79453174e6944b66bfa874a32ede",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "project_name": "rdflib-scratchpad",
+      "python_package_fqname": "aucampia.rdflib.scratchpad",
+      "project_url": "https://example.com/project",
+      "project_dirname": "rdflib-scratchpad",
+      "project_short_description": "rdflib-scratchpad",
+      "cli_name": "aucampia.rdflib.scratchpad-cli",
+      "sdpx_license_identifier": "UNLICENSED",
+      "version": "0.0.0",
+      "python_version": "3.9",
+      "git_init": "n",
+      "git_commit": "n",
+      "variant": "basic",
+      "build_tool": "go-task",
+      "use_poetry_dynamic_versioning": "n",
+      "use_oci_devtools": "n",
+      "_template": "/home/iwana/sw/d/github.com/aucampia/cookiecutter-python"
+    }
+  },
+  "directory": null
+}

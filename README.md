@@ -1,7 +1,29 @@
 # ...
 
 ```bash
-poetry run aucampia.template.poetry
-poetry run aucampia.template.poetry.click
-poetry run aucampia.template.poetry.typer version
+poetry install
+poetry run aucampia.rdflib.scratchpad-cli
+
+
+task help
+task validate:fix validate
+
+```
+
+## Using docker devtools
+
+```bash
+make -C devtools -B
+docker compose build
+
+
+docker compose run --rm python-devtools task help
+docker compose run --rm python-devtools task validate:fix validate
+
+```
+
+## Updating from template base
+
+```bash
+pipx run --spec=cruft cruft update
 ```

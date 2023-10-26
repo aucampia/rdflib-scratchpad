@@ -1,0 +1,16 @@
+default_context:
+  build_tool: go-task
+  cli_name: aucampia.rdflib.scratchpad-cli
+  git_commit: n
+  git_init: n
+  project_dirname: rdflib-scratchpad
+  project_name: rdflib-scratchpad
+  project_short_description: rdflib-scratchpad
+  project_url: https://example.com/project
+  python_package_fqname: aucampia.rdflib.scratchpad
+  python_version: '3.9'
+  sdpx_license_identifier: UNLICENSED
+  use_oci_devtools: n
+  use_poetry_dynamic_versioning: n
+  variant: basic
+  version: 0.0.0
